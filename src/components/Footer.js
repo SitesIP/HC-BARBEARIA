@@ -38,7 +38,6 @@ export function renderFooter() {
         </div>
         <div class="footer-bottom">
           <p>© ${new Date().getFullYear()} ${config.shopName}. Todos os direitos reservados.</p>
-          <a href="#/admin/login" style="color: var(--gray-dark); font-size: 0.75rem;">Área Administrativa</a>
         </div>
       </div>
     </footer>

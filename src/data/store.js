@@ -7,7 +7,6 @@ const STORAGE_KEYS = {
   CLIENTS: 'hc_clients',
   CONFIG: 'hc_config',
   BLOCKED_DATES: 'hc_blocked_dates',
-  ADMIN_AUTH: 'hc_admin_auth',
 };
 
 // Default Data
@@ -49,7 +48,6 @@ const DEFAULT_CONFIG = {
   slotInterval: 30, // minutes
   instagram: 'https://www.instagram.com/hcbarbeariaa',
   facebook: '',
-  adminPassword: 'admin123',
 };
 
 const DEFAULT_TESTIMONIALS = [
@@ -217,22 +215,6 @@ class Store {
   }
   isDateBlocked(date) {
     return this._get(STORAGE_KEYS.BLOCKED_DATES).some(b => b.date === date);
-  }
-
-  // Auth
-  login(password) {
-    const config = this.getConfig();
-    if (password === config.adminPassword) {
-      sessionStorage.setItem(STORAGE_KEYS.ADMIN_AUTH, 'true');
-      return true;
-    }
-    return false;
-  }
-  isAuthenticated() {
-    return sessionStorage.getItem(STORAGE_KEYS.ADMIN_AUTH) === 'true';
-  }
-  logout() {
-    sessionStorage.removeItem(STORAGE_KEYS.ADMIN_AUTH);
   }
 
   // Stats

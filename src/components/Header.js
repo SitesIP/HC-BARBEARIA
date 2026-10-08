@@ -1,7 +1,7 @@
 // ===== H&C Barbearia — Header Component =====
 import store from '../data/store.js';
 
-export function renderHeader(isAdmin = false) {
+export function renderHeader() {
   const config = store.getConfig();
 
   return `
@@ -12,24 +12,13 @@ export function renderHeader(isAdmin = false) {
           <span>${config.shopName}</span>
         </a>
 
-        ${isAdmin ? `
-          <nav class="nav-menu" id="nav-menu">
-            <a href="#/admin" class="nav-link" data-route="/admin">Dashboard</a>
-            <a href="#/admin/agendamentos" class="nav-link" data-route="/admin/agendamentos">Agendamentos</a>
-            <a href="#/admin/servicos" class="nav-link" data-route="/admin/servicos">Serviços</a>
-            <a href="#/admin/profissionais" class="nav-link" data-route="/admin/profissionais">Profissionais</a>
-            <a href="#/admin/configuracoes" class="nav-link" data-route="/admin/configuracoes">Config</a>
-            <button class="btn btn-secondary btn-sm" id="btn-logout">Sair</button>
-          </nav>
-        ` : `
-          <nav class="nav-menu" id="nav-menu">
-            <a href="#/" class="nav-link" data-route="/">Início</a>
-            <a href="#/servicos" class="nav-link" data-route="/servicos">Serviços</a>
-            <a href="#/profissionais" class="nav-link" data-route="/profissionais">Profissionais</a>
-            <a href="#/contato" class="nav-link" data-route="/contato">Contato</a>
-            <a href="#/agendar" class="btn btn-primary btn-sm nav-cta" id="nav-cta">Agendar</a>
-          </nav>
-        `}
+        <nav class="nav-menu" id="nav-menu">
+          <a href="#/" class="nav-link" data-route="/">Início</a>
+          <a href="#/servicos" class="nav-link" data-route="/servicos">Serviços</a>
+          <a href="#/profissionais" class="nav-link" data-route="/profissionais">Profissionais</a>
+          <a href="#/contato" class="nav-link" data-route="/contato">Contato</a>
+          <a href="#/agendar" class="btn btn-primary btn-sm nav-cta" id="nav-cta">Agendar</a>
+        </nav>
 
         <button class="mobile-toggle" id="mobile-toggle" aria-label="Menu">
           <span></span>
@@ -81,12 +70,4 @@ export function initHeader() {
     }
   });
 
-  // Logout
-  const logoutBtn = document.getElementById('btn-logout');
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', () => {
-      store.logout();
-      window.location.hash = '#/admin/login';
-    });
-  }
 }
