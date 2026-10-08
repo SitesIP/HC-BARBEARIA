@@ -168,7 +168,8 @@ function renderStepDate() {
     const isClosed = !dayConfig || !dayConfig.active || dayKeys[dayOfWeek] === 'sex' || dayKeys[dayOfWeek] === 'sab';
     const isBlocked = store.isDateBlocked(dateStr);
     const isDisabled = isPast || isTooFar || isClosed || isBlocked;
-    const isToday = dateStr === today.toISOString().split('T')[0];
+    const localTodayStr = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
+    const isToday = dateStr === localTodayStr;
     const isSelected = bookingState.selectedDate === dateStr;
 
     days += `<div class="calendar-day ${isDisabled ? 'disabled' : ''} ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''}" ${!isDisabled ? `data-date="${dateStr}"` : ''} id="day-${d}">${d}</div>`;

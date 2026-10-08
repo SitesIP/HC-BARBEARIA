@@ -148,7 +148,8 @@ class Store {
     return this._get(STORAGE_KEYS.APPOINTMENTS).filter(a => a.barberId === barberId && a.dataCorte === date && a.status !== 'cancelled');
   }
   getTodayAppointments() {
-    const today = new Date().toISOString().split('T')[0];
+    const now = new Date();
+    const today = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`;
     return this.getAppointmentsByDate(today);
   }
   saveAppointment(appointment) {
@@ -236,7 +237,8 @@ class Store {
 
   // Stats
   getStats() {
-    const today = new Date().toISOString().split('T')[0];
+    const now = new Date();
+    const today = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`;
     const appointments = this.getAppointments();
     const todayAppts = appointments.filter(a => a.dataCorte === today && a.status !== 'cancelled');
     const monthAppts = appointments.filter(a => {
@@ -290,7 +292,8 @@ class Store {
     const end = closeH * 60 + closeM;
 
     const now = new Date();
-    const isToday = date === now.toISOString().split('T')[0];
+    const localDateStr = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`;
+    const isToday = date === localDateStr;
 
     while (current < end) {
       const h = Math.floor(current / 60).toString().padStart(2, '0');
