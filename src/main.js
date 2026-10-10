@@ -1,4 +1,4 @@
-// ===== H&C Barbearia — Main Entry & Router Setup =====
+// ===== Application entry and routing =====
 import './styles/main.css';
 import router from './utils/router.js';
 

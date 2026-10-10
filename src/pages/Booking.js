@@ -1,9 +1,9 @@
-// ===== H&C Barbearia — Booking Page (7-Step Flow) =====
+// ===== Generic appointment booking flow =====
 import store from '../data/store.js';
 import { renderHeader, initHeader } from '../components/Header.js';
 import {
   formatCurrency, formatDate, formatDateShort, formatDateDMY, getWeekdayName, generateCode,
-  sendToGoogleSheets, fetchGoogleSheetsAppointments, getWhatsAppUrl, getCalendarUrl,
+  sendToGoogleSheets, fetchGoogleSheetsAppointments, getCalendarUrl, getWhatsAppUrl,
   phoneMask, isValidPhone, showToast, MONTHS, WEEKDAYS
 } from '../utils/helpers.js';
 
@@ -124,7 +124,7 @@ function renderStepBarber() {
     <div class="barber-select-grid" id="barber-list">
       ${barbers.map(barber => `
         <div class="barber-select-item ${bookingState.selectedBarber === barber.id ? 'selected' : ''}" data-barber-id="${barber.id}" id="barber-${barber.id}">
-          <img src="${barber.image}" alt="${barber.name}" />
+          <span class="barber-placeholder" aria-hidden="true">✂</span>
           <h4>${barber.name}</h4>
           <p>${barber.specialty}</p>
         </div>
@@ -283,9 +283,9 @@ function renderStepClient() {
         <div class="form-error" id="name-error" style="display: none; color: #ff5252; font-size: 0.8rem; margin-top: 4px;">Por favor, digite seu nome completo.</div>
       </div>
       <div class="form-group">
-        <label class="form-label" for="client-phone">Telefone / WhatsApp (com DDD) *</label>
-        <input type="tel" class="form-input" id="client-phone" placeholder="(84) 9XXXX-XXXX" value="${bookingState.clientPhone}" autocomplete="tel" required />
-        <div class="form-error" id="phone-error" style="display: none; color: #ff5252; font-size: 0.8rem; margin-top: 4px;">Por favor, digite um número de WhatsApp válido com DDD (ex: (84) 98143-4692).</div>
+        <label class="form-label" for="client-phone">Telefone para contato *</label>
+        <input type="tel" class="form-input" id="client-phone" placeholder="Informe seu telefone com DDD" value="${bookingState.clientPhone}" autocomplete="tel" required />
+        <div class="form-error" id="phone-error" style="display: none; color: #ff5252; font-size: 0.8rem; margin-top: 4px;">Informe um telefone válido com DDD.</div>
       </div>
     </div>
     <div class="booking-actions">
@@ -314,7 +314,7 @@ function renderStepReview() {
         <span class="review-item-value">${bookingState.clientName}</span>
       </div>
       <div class="review-item">
-        <span class="review-item-label">📱 Telefone / WhatsApp</span>
+        <span class="review-item-label">📱 Telefone para contato</span>
         <span class="review-item-value">${bookingState.clientPhone}</span>
       </div>
       <div class="review-item">
@@ -323,7 +323,7 @@ function renderStepReview() {
       </div>
       <div class="review-item">
         <span class="review-item-label">💈 Barbeiro</span>
-        <span class="review-item-value">${barber?.name || 'Barbeiro 1'} (${barber?.sheetTab || 'Barbeiro 1'})</span>
+        <span class="review-item-value">${barber?.name || 'Profissional 1'} (${barber?.sheetTab || 'Profissional 1'})</span>
       </div>
       <div class="review-item">
         <span class="review-item-label">📅 Data</span>
@@ -354,8 +354,9 @@ function renderStepConfirmation() {
   const totalDuration = selectedSvcs.reduce((sum, s) => sum + s.duration, 0);
 
   const data = {
+    shopName: store.getConfig().shopName || 'Barbearia',
     nome: bookingState.clientName,
-    barbeiro: barber?.name || 'Barbeiro 1',
+    barbeiro: barber?.name || 'Profissional',
     aba: barber?.sheetTab || 'Barbeiro 1',
     telefone: bookingState.clientPhone,
     numero: bookingState.clientPhone,
@@ -368,8 +369,7 @@ function renderStepConfirmation() {
     code: bookingState.confirmationCode || '',
   };
 
-  const barberWhatsApp = barber?.whatsapp || (barber?.name === 'Barbeiro 2' ? '5584991294651' : '5584981434692');
-  const whatsappUrl = getWhatsAppUrl(data, barberWhatsApp);
+  const whatsappUrl = getWhatsAppUrl(data, store.getConfig().whatsapp);
   const calendarUrl = getCalendarUrl(data);
 
   return `
@@ -377,17 +377,13 @@ function renderStepConfirmation() {
       <div class="confirmation-icon">✅</div>
       <h2 style="font-size: 1.5rem; margin-bottom: var(--space-sm);">Agendamento Gravado com Sucesso!</h2>
       <p style="color: var(--gray-medium); margin-bottom: var(--space-lg); font-size: 0.95rem; line-height: 1.5;">
-        Seus dados foram registrados com sucesso. Clique no botão verde abaixo para enviar o resumo ao WhatsApp do barbeiro e finalizar sua confirmação.
+        Seus dados foram registrados. Envie os detalhes pelo WhatsApp para confirmar o agendamento.
       </p>
 
       <div class="review-card" style="text-align: left; margin-top: var(--space-md);">
         <div class="review-item">
           <span class="review-item-label">👤 Cliente</span>
           <span class="review-item-value">${data.nome}</span>
-        </div>
-        <div class="review-item">
-          <span class="review-item-label">📱 Telefone</span>
-          <span class="review-item-value">${data.telefone}</span>
         </div>
         <div class="review-item">
           <span class="review-item-label">✂️ Serviço</span>
@@ -408,8 +404,8 @@ function renderStepConfirmation() {
       </div>
 
       <div class="confirmation-actions" style="margin-top: var(--space-lg); display: flex; flex-direction: column; gap: 12px;">
-        <a href="${whatsappUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-block" style="background: #25D366; color: #000000; font-weight: 700; font-size: 0.95rem; letter-spacing: 0.5px; padding: 16px 18px; box-shadow: 0 4px 20px rgba(37,211,102,0.35); text-align: center; display: flex; align-items: center; justify-content: center; text-transform: uppercase;">
-          📲 Confirmação Obrigatória via WhatsApp
+        <a href="${whatsappUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-block" style="text-align: center;">
+          Confirmar pelo WhatsApp
         </a>
         <a href="${calendarUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-block" style="text-align: center; font-size: 0.9rem; padding: 14px 18px;">
           📅 Adicionar ao Google Agenda
@@ -425,7 +421,7 @@ function renderStepConfirmation() {
 // Fetch remote slots helper
 async function syncRemoteSlots() {
   const barber = store.getBarberById(bookingState.selectedBarber) || store.getBarbers()[0];
-  const tabName = barber?.sheetTab || barber?.name || 'Barbeiro 1';
+  const tabName = barber?.sheetTab || 'Barbeiro 1';
   
   bookingState.loadingSlots = true;
   updateBookingUI();
@@ -652,10 +648,8 @@ function bindReviewEvents() {
       const barbers = store.getBarbers();
       const selectedSvcs = bookingState.selectedServices.map(id => services.find(s => s.id === id)).filter(Boolean);
       const barber = barbers.find(b => b.id === bookingState.selectedBarber) || barbers[0];
-      const barberName = barber?.name || 'Barbeiro 1';
-      const barberTab = barber?.sheetTab || 'Barbeiro 1';
-      const barberWhatsApp = barber?.whatsapp || (barberName === 'Barbeiro 2' ? '5584991294651' : '5584981434692');
-
+      const barberName = barber?.name || 'Profissional';
+      const barberTab = barber?.sheetTab || 'Profissional';
       const code = generateCode();
       bookingState.confirmationCode = code;
 
@@ -690,12 +684,6 @@ function bindReviewEvents() {
       // 3. Go to confirmation step
       bookingState.step = 7;
       updateBookingUI();
-
-      // Auto redirect to WhatsApp after 1.5 seconds if supported
-      setTimeout(() => {
-        const url = getWhatsAppUrl(appointmentData, barberWhatsApp);
-        window.open(url, '_blank');
-      }, 1200);
 
     } catch (err) {
       console.error('Erro ao confirmar:', err);

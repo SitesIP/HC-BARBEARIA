@@ -1,4 +1,4 @@
-// ===== H&C Barbearia — Services Page =====
+// ===== Generic services page =====
 import store from '../data/store.js';
 import { renderHeader, initHeader } from '../components/Header.js';
 import { renderFooter } from '../components/Footer.js';

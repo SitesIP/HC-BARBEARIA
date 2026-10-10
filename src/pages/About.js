@@ -1,5 +1,4 @@
-// ===== H&C Barbearia — About Page =====
-import store from '../data/store.js';
+// ===== Generic barbershop about page =====
 import { renderHeader, initHeader } from '../components/Header.js';
 import { renderFooter } from '../components/Footer.js';
 import { initScrollReveal } from '../utils/helpers.js';
@@ -10,7 +9,7 @@ export function renderAbout() {
 
     <section class="about-hero">
       <div class="container">
-        <h1>Sobre a <span style="color: var(--gold);">H&C Barbearia</span></h1>
+        <h1>Sobre a <span style="color: var(--gold);">Barbearia</span></h1>
         <p style="color: var(--gray-medium); max-width: 600px; margin: var(--space-md) auto 0;">Conheça nossa história, valores e o que nos torna referência em barbearia.</p>
       </div>
     </section>
@@ -20,12 +19,12 @@ export function renderAbout() {
         <div class="about-content reveal">
           <div class="about-text">
             <h2>Nossa <span style="color: var(--gold);">História</span></h2>
-            <p>Fundada em 2020, a H&C Barbearia nasceu da paixão pela arte de cuidar do visual masculino. Desde o início, nosso compromisso é oferecer muito mais do que um simples corte — proporcionamos uma experiência completa de cuidado, estilo e bem-estar.</p>
+            <p>Uma barbearia criada para cuidar do visual masculino com atenção, estilo e bem-estar. Cada atendimento é pensado para refletir a personalidade de cada cliente.</p>
             <p>Com profissionais experientes e apaixonados, ambiente sofisticado e produtos de alta qualidade, nos tornamos referência na região. Cada atendimento é único, pensado para refletir a personalidade de cada cliente.</p>
             <p>Acreditamos que cuidar da aparência é uma forma de autoconfiança e expressão pessoal. Por isso, investimos constantemente em treinamentos, tendências e inovação.</p>
           </div>
           <div class="about-image">
-            <img src="/images/hero-bg.jpg" alt="Interior da H&C Barbearia" loading="lazy" />
+            <img src="/images/barber1.jpg" alt="Atendimento em uma barbearia" loading="lazy" />
           </div>
         </div>
 

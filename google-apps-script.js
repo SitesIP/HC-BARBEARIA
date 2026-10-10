@@ -1,6 +1,6 @@
 /**
  * =========================================================================
- * H&C Barbearia — Código do Google Apps Script (Web App + Automação)
+ * Barbearia — Google Apps Script (Web App + Automação)
  * =========================================================================
  * 
  * RECURSOS INCLUÍDOS:
@@ -10,7 +10,7 @@
  * 4. Reset Automático Semanal -> Limpa agendamentos todo domingo às 00:00 automaticamente.
  * 
  * INSTRUÇÕES DE INSTALAÇÃO:
- * 1. Abra sua planilha "HC - Agendamentos" no Google Sheets.
+ * 1. Abra sua planilha de agendamentos no Google Sheets.
  * 2. Clique no menu superior: Extensões > Apps Script.
  * 3. Substitua todo o código pelo conteúdo deste arquivo.
  * 4. Salve (ícone de disquete).
@@ -18,7 +18,7 @@
  *    - Executar como: "Eu"
  *    - Quem tem acesso: "Qualquer pessoa" (Anyone)
  *    - Clique em Implantar.
- * 6. Atualize a página da planilha no navegador. O menu "💈 H&C Barbearia" estará pronto!
+ * 6. Atualize a página da planilha no navegador. O menu "💈 Barbearia" estará pronto!
  * =========================================================================
  */
 
@@ -43,12 +43,11 @@ function doPost(e) {
 
     var ss = SpreadsheetApp.getActiveSpreadsheet();
     
-    // Mapeamento da Aba (Barbeiro 1 ou Barbeiro 2)
-    var tabName = data.aba || data.barbeiro || "Barbeiro 1";
+    var tabName = resolveSheetTabName(data.aba || data.barbeiro || "Barbeiro 1");
     var sheet = ss.getSheetByName(tabName);
     
     if (!sheet) {
-      sheet = ss.getSheetByName("Barbeiro 1") || ss.getSheets()[0];
+      throw new Error('A aba "' + tabName + '" não foi encontrada na planilha.');
     }
 
     var barbeiro = data.barbeiro || tabName;
@@ -172,7 +171,7 @@ function ordenarAba(sheet) {
 // Ordena manualmente todas as abas de barbeiros
 function ordenarTodasAsAbas() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var abas = ["Barbeiro 1", "Barbeiro 2"];
+  var abas = ["Profissional 1", "Profissional 2"];
   
   abas.forEach(function(nomeAba) {
     var sheet = ss.getSheetByName(nomeAba);
@@ -182,7 +181,7 @@ function ordenarTodasAsAbas() {
   });
 
   var ui = SpreadsheetApp.getUi();
-  ui.alert('Ordenação Concluída', 'As abas "Barbeiro 1" e "Barbeiro 2" foram ordenadas por Data e Horário com sucesso!', ui.ButtonSet.OK);
+  ui.alert('Ordenação Concluída', 'As abas dos profissionais foram ordenadas por Data e Horário com sucesso!', ui.ButtonSet.OK);
 }
 
 // ==========================================
@@ -191,11 +190,11 @@ function ordenarTodasAsAbas() {
 function doGet(e) {
   try {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
-    var tabName = (e && e.parameter && (e.parameter.aba || e.parameter.barbeiro)) || "Barbeiro 1";
+    var tabName = resolveSheetTabName((e && e.parameter && (e.parameter.aba || e.parameter.barbeiro)) || "Barbeiro 1");
     var sheet = ss.getSheetByName(tabName);
     
     if (!sheet) {
-      sheet = ss.getSheetByName("Barbeiro 1") || ss.getSheets()[0];
+      throw new Error('A aba "' + tabName + '" não foi encontrada na planilha.');
     }
 
     var lastRow = sheet.getLastRow();
@@ -258,15 +257,23 @@ function doGet(e) {
   }
 }
 
+function resolveSheetTabName(name) {
+  var aliases = {
+    "Profissional 1": "Barbeiro 1",
+    "Profissional 2": "Barbeiro 2"
+  };
+  return aliases[name] || name;
+}
+
 // ==========================================
 // 4. MENU SUPERIOR PERSONALIZADO NO GOOGLE SHEETS
 // ==========================================
 function onOpen() {
   var ui = SpreadsheetApp.getUi();
-  ui.createMenu('💈 H&C Barbearia')
-    .addItem('🔃 Organizar por Data e Horário (Barbeiro 1 e 2)', 'ordenarTodasAsAbas')
+  ui.createMenu('💈 Barbearia')
+    .addItem('🔃 Organizar por Data e Horário (profissionais)', 'ordenarTodasAsAbas')
     .addSeparator()
-    .addItem('🧹 Resetar Agendamentos Agora (Barbeiro 1 e 2)', 'limparAgendamentosManualmente')
+    .addItem('🧹 Resetar Agendamentos Agora (profissionais)', 'limparAgendamentosManualmente')
     .addSeparator()
     .addItem('⏰ Ativar Reset Automático (Todo Domingo 00:00)', 'configurarTriggerSemanal')
     .addToUi();
@@ -277,7 +284,7 @@ function onOpen() {
 // ==========================================
 function resetarAgendamentos() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var abas = ["Barbeiro 1", "Barbeiro 2"];
+  var abas = ["Profissional 1", "Profissional 2"];
   
   abas.forEach(function(nomeAba) {
     var sheet = ss.getSheetByName(nomeAba);
@@ -297,13 +304,13 @@ function limparAgendamentosManualmente() {
   var ui = SpreadsheetApp.getUi();
   var resposta = ui.alert(
     'Confirmar Limpeza de Horários',
-    'Tem certeza de que deseja limpar todos os agendamentos das abas "Barbeiro 1" e "Barbeiro 2"?\n\n(O cabeçalho e a formatação da linha 1 serão mantidos).',
+    'Tem certeza de que deseja limpar os agendamentos das abas dos profissionais?\n\n(O cabeçalho e a formatação da linha 1 serão mantidos).',
     ui.ButtonSet.YES_NO
   );
   
   if (resposta === ui.Button.YES) {
     resetarAgendamentos();
-    ui.alert('Concluído', 'Agendamentos de "Barbeiro 1" e "Barbeiro 2" foram resetados com sucesso!', ui.ButtonSet.OK);
+    ui.alert('Concluído', 'Os agendamentos dos profissionais foram resetados com sucesso!', ui.ButtonSet.OK);
   }
 }
 
@@ -312,7 +319,7 @@ function limparAgendamentosManualmente() {
 // ==========================================
 function resetSemanalAutomatico() {
   resetarAgendamentos();
-  console.log("Reset semanal automático executado com sucesso nas abas Barbeiro 1 e Barbeiro 2.");
+  console.log("Reset semanal automático executado com sucesso nas abas dos profissionais.");
 }
 
 // Configura o agendador automático no Google Sheets
@@ -333,7 +340,7 @@ function configurarTriggerSemanal() {
   var ui = SpreadsheetApp.getUi();
   ui.alert(
     'Automação Ativada com Sucesso!',
-    'O Google Sheets agora irá resetar automaticamente as abas "Barbeiro 1" e "Barbeiro 2" todo Domingo às 00:00.',
+    'O Google Sheets irá resetar automaticamente as abas dos profissionais todo domingo à meia-noite.',
     ui.ButtonSet.OK
   );
 }

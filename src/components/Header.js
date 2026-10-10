@@ -1,22 +1,36 @@
-// ===== H&C Barbearia — Header Component =====
+// ===== Generic site header =====
 import store from '../data/store.js';
 
-export function renderHeader() {
+export function renderHeader(overlay = false) {
   const config = store.getConfig();
+  const navigation = overlay
+    ? [
+        { label: 'Início', section: 'hero' },
+        { label: 'Serviços', section: 'services-section' },
+        { label: 'Profissionais', section: 'barbers-section' },
+        { label: 'Contato', section: 'footer' },
+      ]
+    : [
+        { label: 'Início', route: '/' },
+        { label: 'Serviços', route: '/servicos' },
+        { label: 'Profissionais', route: '/profissionais' },
+        { label: 'Contato', route: '/contato' },
+      ];
 
   return `
-    <header class="header" id="header">
+    <header class="header ${overlay ? 'header-overlay' : ''}" id="header">
       <div class="container">
-        <a href="#/" class="header-logo" id="header-logo">
-          <img src="/images/logo.png" alt="${config.shopName}" />
-          <span>${config.shopName}</span>
+        <a href="${overlay ? '#hero' : '#/'}" class="header-logo" id="header-logo" ${overlay ? 'data-section="hero"' : ''}>
+          <span>${config.shopName || 'Barbearia'}</span>
         </a>
 
         <nav class="nav-menu" id="nav-menu">
-          <a href="#/" class="nav-link" data-route="/">Início</a>
-          <a href="#/servicos" class="nav-link" data-route="/servicos">Serviços</a>
-          <a href="#/profissionais" class="nav-link" data-route="/profissionais">Profissionais</a>
-          <a href="#/contato" class="nav-link" data-route="/contato">Contato</a>
+          ${navigation.map(item => `
+            <a href="${overlay ? `#${item.section}` : `#${item.route}`}"
+               class="nav-link"
+               ${overlay ? `data-section="${item.section}"` : `data-route="${item.route}"`}
+               ${overlay ? 'aria-current="false"' : ''}>${item.label}</a>
+          `).join('')}
           <a href="#/agendar" class="btn btn-primary btn-sm nav-cta" id="nav-cta">Agendar</a>
         </nav>
 
@@ -50,6 +64,46 @@ export function initHeader() {
     });
   }
 
+  const sectionLinks = document.querySelectorAll('.nav-link[data-section], .header-logo[data-section]');
+  const sections = [...sectionLinks]
+    .map(link => document.getElementById(link.dataset.section))
+    .filter(Boolean);
+
+  if (sectionLinks.length && sections.length) {
+    const setActiveSection = (sectionId) => {
+      sectionLinks.forEach(link => {
+        const isActive = link.dataset.section === sectionId;
+        link.classList.toggle('active', isActive);
+        if (link.classList.contains('nav-link')) {
+          link.setAttribute('aria-current', isActive ? 'location' : 'false');
+        }
+      });
+    };
+
+    sectionLinks.forEach(link => {
+      link.addEventListener('click', event => {
+        const section = document.getElementById(link.dataset.section);
+        if (!section) return;
+        event.preventDefault();
+        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+
+    setActiveSection('hero');
+
+    const sectionObserver = new IntersectionObserver(entries => {
+      const visibleSections = entries
+        .filter(entry => entry.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+      if (visibleSections[0]) setActiveSection(visibleSections[0].target.id);
+    }, {
+      rootMargin: '-25% 0px -60% 0px',
+      threshold: [0, 0.25, 0.5, 0.75, 1],
+    });
+
+    sections.forEach(section => sectionObserver.observe(section));
+  }
+
   // Scroll effect
   if (header) {
     window.addEventListener('scroll', () => {
@@ -58,7 +112,7 @@ export function initHeader() {
       } else {
         header.classList.remove('scrolled');
       }
-    });
+    }, { passive: true });
   }
 
   // Active nav link

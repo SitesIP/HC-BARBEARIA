@@ -1,4 +1,4 @@
-// ===== H&C Barbearia — Data Store (localStorage) =====
+// ===== Generic barbershop data store =====
 
 const STORAGE_KEYS = {
   SERVICES: 'hc_services',
@@ -7,7 +7,10 @@ const STORAGE_KEYS = {
   CLIENTS: 'hc_clients',
   CONFIG: 'hc_config',
   BLOCKED_DATES: 'hc_blocked_dates',
+  TEMPLATE_VERSION: 'hc_template_version',
 };
+
+const TEMPLATE_VERSION = '2';
 
 // Default Data
 const DEFAULT_SERVICES = [
@@ -26,16 +29,15 @@ const DEFAULT_SERVICES = [
 ];
 
 const DEFAULT_BARBERS = [
-  { id: 1, name: 'Barbeiro 1', sheetTab: 'Barbeiro 1', phone: '84981434692', whatsapp: '5584981434692', specialty: 'Cortes & Barba', image: '/images/barber1.jpg', active: true },
-  { id: 2, name: 'Barbeiro 2', sheetTab: 'Barbeiro 2', phone: '84991294651', whatsapp: '5584991294651', specialty: 'Cortes & Barba', image: '/images/barber2.jpg', active: true },
+  { id: 1, name: 'Profissional 1', sheetTab: 'Barbeiro 1', specialty: 'Cortes & Barba', active: true },
+  { id: 2, name: 'Profissional 2', sheetTab: 'Barbeiro 2', specialty: 'Cortes & Barba', active: true },
 ];
 
 const DEFAULT_CONFIG = {
-  shopName: 'H&C Barbearia',
-  phone: '5511999999999',
-  whatsapp: '5511999999999',
-  email: 'contato@hcbarbearia.com',
-  address: 'Rua Exemplo, 123 — Centro, São Paulo - SP',
+  shopName: 'Barbearia',
+  address: '',
+  instagram: 'https://www.instagram.com/seu_perfil', // Edite para o perfil da barbearia.
+  whatsapp: '5511999999999', // Edite com DDI e DDD, somente números.
   openingHours: {
     seg: { open: '13:30', close: '17:30', active: true },
     ter: { open: '09:00', close: '18:00', active: true },
@@ -46,17 +48,7 @@ const DEFAULT_CONFIG = {
     dom: { open: null, close: null, active: false },
   },
   slotInterval: 30, // minutes
-  instagram: 'https://www.instagram.com/hcbarbeariaa',
-  facebook: '',
 };
-
-const DEFAULT_TESTIMONIALS = [
-  { id: 1, name: 'Marcos Oliveira', text: 'Melhor barbearia da cidade! O Rafael é um mestre no degradê. Ambiente incrível e atendimento impecável.', rating: 5, date: '2026-09-15' },
-  { id: 2, name: 'Pedro Santos', text: 'Já experimentei várias barbearias, mas a H&C é diferente. O combo corte + barba é uma experiência completa. Recomendo demais!', rating: 5, date: '2026-09-20' },
-  { id: 3, name: 'Gabriel Lima', text: 'O Lucas fez a pigmentação na minha barba e ficou perfeito! Ninguém nota as falhas. Profissionalismo puro.', rating: 5, date: '2026-09-28' },
-  { id: 4, name: 'Thiago Alves', text: 'Ambiente premium, atendimento de primeira. O André entende muito de corte moderno. Saio sempre satisfeito.', rating: 5, date: '2026-10-02' },
-  { id: 5, name: 'Felipe Rocha', text: 'Agendamento online super prático. Cheguei na hora, fui atendido na hora. Corte ficou show!', rating: 4, date: '2026-10-04' },
-];
 
 // Store Class
 class Store {
@@ -65,19 +57,46 @@ class Store {
   }
 
   init() {
-    // Force overwrite for this update to clear previous values
-    localStorage.setItem(STORAGE_KEYS.SERVICES, JSON.stringify(DEFAULT_SERVICES));
-    localStorage.setItem(STORAGE_KEYS.BARBERS, JSON.stringify(DEFAULT_BARBERS));
-    localStorage.setItem(STORAGE_KEYS.CONFIG, JSON.stringify(DEFAULT_CONFIG));
+    if (localStorage.getItem(STORAGE_KEYS.TEMPLATE_VERSION) !== TEMPLATE_VERSION) {
+      localStorage.setItem(STORAGE_KEYS.SERVICES, JSON.stringify(DEFAULT_SERVICES));
+      localStorage.setItem(STORAGE_KEYS.BARBERS, JSON.stringify(DEFAULT_BARBERS));
+      localStorage.setItem(STORAGE_KEYS.CONFIG, JSON.stringify(DEFAULT_CONFIG));
+      localStorage.setItem(STORAGE_KEYS.TEMPLATE_VERSION, TEMPLATE_VERSION);
+    } else {
+      if (!localStorage.getItem(STORAGE_KEYS.SERVICES)) {
+        localStorage.setItem(STORAGE_KEYS.SERVICES, JSON.stringify(DEFAULT_SERVICES));
+      }
+      if (!localStorage.getItem(STORAGE_KEYS.BARBERS)) {
+        localStorage.setItem(STORAGE_KEYS.BARBERS, JSON.stringify(DEFAULT_BARBERS));
+      }
+      if (!localStorage.getItem(STORAGE_KEYS.CONFIG)) {
+        localStorage.setItem(STORAGE_KEYS.CONFIG, JSON.stringify(DEFAULT_CONFIG));
+      }
+    }
+
+    const barbers = this._get(STORAGE_KEYS.BARBERS);
+    const tabAliases = {
+      'Profissional 1': 'Barbeiro 1',
+      'Profissional 2': 'Barbeiro 2',
+    };
+    let barbersUpdated = false;
+    barbers.forEach((barber) => {
+      const sheetTab = tabAliases[barber.sheetTab];
+      if (sheetTab) {
+        barber.sheetTab = sheetTab;
+        barbersUpdated = true;
+      }
+    });
+    if (barbersUpdated) this._set(STORAGE_KEYS.BARBERS, barbers);
+
+    const config = this.getConfig();
+    this._set(STORAGE_KEYS.CONFIG, { ...DEFAULT_CONFIG, ...config });
 
     if (!localStorage.getItem(STORAGE_KEYS.APPOINTMENTS)) {
       localStorage.setItem(STORAGE_KEYS.APPOINTMENTS, JSON.stringify([]));
     }
     if (!localStorage.getItem(STORAGE_KEYS.CLIENTS)) {
       localStorage.setItem(STORAGE_KEYS.CLIENTS, JSON.stringify([]));
-    }
-    if (!localStorage.getItem(STORAGE_KEYS.CONFIG)) {
-      localStorage.setItem(STORAGE_KEYS.CONFIG, JSON.stringify(DEFAULT_CONFIG));
     }
     if (!localStorage.getItem(STORAGE_KEYS.BLOCKED_DATES)) {
       localStorage.setItem(STORAGE_KEYS.BLOCKED_DATES, JSON.stringify([]));
@@ -152,7 +171,7 @@ class Store {
   }
   saveAppointment(appointment) {
     const appointments = this._get(STORAGE_KEYS.APPOINTMENTS);
-    appointment.id = appointment.id || `HC-${Date.now().toString(36).toUpperCase()}`;
+    appointment.id = appointment.id || `RES-${Date.now().toString(36).toUpperCase()}`;
     appointment.status = appointment.status || 'confirmed';
     appointment.createdAt = appointment.createdAt || new Date().toISOString();
     appointments.push(appointment);

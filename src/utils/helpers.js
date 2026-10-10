@@ -1,4 +1,4 @@
-// ===== H&C Barbearia — Utilities =====
+// ===== Application utilities =====
 
 // Format currency BRL
 export function formatCurrency(value) {
@@ -30,7 +30,7 @@ export function formatDateShort(dateStr) {
 // Generate unique code
 export function generateCode() {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  let code = 'HC-';
+  let code = 'RES-';
   for (let i = 0; i < 6; i++) {
     code += chars.charAt(Math.floor(Math.random() * chars.length));
   }
@@ -107,7 +107,7 @@ export function getWeekdayName(dateStr) {
 export async function sendToGoogleSheets(data) {
   const payload = {
     aba: data.aba || data.barbeiro || 'Barbeiro 1',
-    barbeiro: data.barbeiro || 'Barbeiro 1',
+    barbeiro: data.barbeiro || 'Profissional 1',
     nome: data.nome || '',
     numero: data.telefone || data.numero || '',
     telefone: data.telefone || data.numero || '',
@@ -163,26 +163,23 @@ export async function fetchGoogleSheetsAppointments(barberTab = 'Barbeiro 1') {
   }
 }
 
-// Build WhatsApp message URL
 export function getWhatsAppUrl(data, phone) {
-  const barberPhone = phone || (data.barbeiro === 'Barbeiro 2' ? '5584991294651' : '5584981434692');
+  const recipient = String(phone || '5511999999999').replace(/\D/g, '');
   const dateFormatted = data.dataFormatted || formatDateDMY(data.dataCorte);
   const weekday = data.diaSemana || getWeekdayName(data.dataCorte);
-
-  const textLines = [
-    'Ola! Gostaria de confirmar meu agendamento na *H&C Barbearia*:',
+  const message = [
+    `Olá! Gostaria de confirmar meu agendamento na ${data.shopName || 'Barbearia'}.`,
     '',
-    `*Cliente:* ${data.nome}`,
-    `*WhatsApp:* ${data.telefone || data.numero || ''}`,
-    `*Servico:* ${data.servico}`,
-    `*Barbeiro:* ${data.barbeiro}`,
-    `*Data:* ${dateFormatted} (${weekday})`,
-    `*Horario:* ${data.horario}`,
-    '',
-    'Aguardo sua confirmacao. Muito obrigado!'
-  ];
+    `Cliente: ${data.nome}`,
+    `Telefone: ${data.telefone || data.numero || ''}`,
+    `Serviço: ${data.servico}`,
+    `Profissional: ${data.barbeiro}`,
+    `Data: ${dateFormatted} (${weekday})`,
+    `Horário: ${data.horario}`,
+    `Código: ${data.code || ''}`,
+  ].join('\n');
 
-  return `https://wa.me/${barberPhone}?text=${encodeURIComponent(textLines.join('\n'))}`;
+  return `https://wa.me/${recipient}?text=${encodeURIComponent(message)}`;
 }
 
 // Build calendar event URL (Google Calendar)
@@ -198,8 +195,8 @@ export function getCalendarUrl(data) {
   const endM = (endMinutes % 60).toString().padStart(2, '0');
   const endDate = `${year}${month}${day}T${endH}${endM}00`;
 
-  const title = encodeURIComponent(`${data.servico} — H&C Barbearia`);
-  const details = encodeURIComponent(`Barbeiro: ${data.barbeiro}\nServiço: ${data.servico}\nCódigo: ${data.code || ''}`);
+  const title = encodeURIComponent(`${data.servico} — Barbearia`);
+  const details = encodeURIComponent(`Profissional: ${data.barbeiro}\nServiço: ${data.servico}\nCódigo: ${data.code || ''}`);
 
   return `https://calendar.google.com/calendar/r/eventedit?text=${title}&dates=${startDate}/${endDate}&details=${details}`;
 }

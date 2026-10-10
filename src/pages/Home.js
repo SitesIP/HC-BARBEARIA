@@ -1,61 +1,30 @@
-// ===== H&C Barbearia — Home Page =====
+// ===== Generic barbershop home page =====
 import store from '../data/store.js';
 import { renderHeader, initHeader } from '../components/Header.js';
 import { renderFooter } from '../components/Footer.js';
-import { formatCurrency, initScrollReveal, getServiceSvg, ICONS } from '../utils/helpers.js';
+import { formatCurrency, initScrollReveal, getServiceSvg } from '../utils/helpers.js';
 
 export function renderHome() {
   const services = store.getServices();
   const barbers = store.getBarbers();
-  const config = store.getConfig();
 
   return `
-    ${renderHeader()}
+    ${renderHeader(true)}
 
     <!-- Hero -->
-    <section class="hero" id="hero">
+    <section class="hero hero-cinematic" id="hero">
       <div class="hero-bg">
-        <div class="hero-radial-glow"></div>
       </div>
       <div class="container hero-container">
         <div class="hero-content">
-          <div class="hero-badge">
-            <span class="badge-star">✦</span> Desde 2020 — Tradição & Estilo
-          </div>
-          <h1>Seu estilo<br><span class="copper-accent">começa aqui.</span></h1>
-          <p class="hero-subtitle">Mais do que um corte, uma experiência. Cuidado, precisão e personalidade em cada atendimento.</p>
+          <h1>Estilo clássico,<br><span>corte moderno</span></h1>
+          <p class="hero-subtitle">Uma experiência feita para valorizar o seu estilo. Agende seu próximo horário.</p>
           <div class="hero-actions">
             <a href="#/agendar" class="btn btn-primary btn-lg" id="hero-cta">
               Agendar Horário
             </a>
-            <a href="#/servicos" class="btn btn-secondary btn-lg" id="hero-services">
-              Conhecer Serviços
-            </a>
-          </div>
-          
-          <!-- Schedule Mode Badges in Hero -->
-          <div class="hero-schedule-wrapper">
-            <div class="schedule-badge-item">
-              <span class="schedule-day-label">Segunda a Quinta:</span>
-              <span class="badge-schedule badge-standard">AGENDAMENTO OU ORDEM DE CHEGADA</span>
-            </div>
-            <div class="schedule-badge-item">
-              <span class="schedule-day-label">Sexta e Sábado:</span>
-              <span class="badge-schedule badge-highlight">SOMENTE ORDEM DE CHEGADA</span>
-            </div>
           </div>
         </div>
-
-        <!-- Featured Emblem Showcase (Logo H&C + Instrumentos em Destaque) -->
-        <div class="hero-visual">
-          <div class="hero-emblem-card">
-            <img src="/images/hero-emblem.jpg" alt="H&C Barbearia — Desde 2020" class="hero-emblem-img" />
-            <div class="hero-emblem-glow"></div>
-          </div>
-        </div>
-      </div>
-      <div class="hero-scroll" aria-hidden="true">
-        <span></span>
       </div>
     </section>
 
@@ -97,7 +66,7 @@ export function renderHome() {
           ${barbers.map((barber, i) => `
             <div class="barber-card reveal" style="transition-delay: ${i * 0.15}s">
               <div class="barber-image">
-                <img src="${barber.image}" alt="${barber.name}" loading="lazy" />
+                <div class="barber-placeholder" aria-hidden="true">✂</div>
               </div>
               <div class="barber-info">
                 <h4>${barber.name}</h4>
@@ -113,17 +82,12 @@ export function renderHome() {
     <section class="cta-section" id="cta-section">
       <div class="container reveal">
         <h2>Pronto para transformar<br>seu <span class="copper-accent">visual</span>?</h2>
-        <p>Agende agora e garanta seu horário com os melhores barbeiros da cidade.</p>
+        <p>Agende seu horário e aproveite um atendimento pensado para você.</p>
         <a href="#/agendar" class="btn btn-primary btn-lg">Agendar Meu Horário</a>
       </div>
     </section>
 
     ${renderFooter()}
-
-    <!-- WhatsApp Float -->
-    <a href="https://wa.me/${config.whatsapp}" target="_blank" rel="noopener" class="whatsapp-float" id="whatsapp-float" aria-label="WhatsApp">
-      ${ICONS.whatsapp}
-    </a>
   `;
 }
 

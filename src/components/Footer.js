@@ -1,18 +1,17 @@
-// ===== H&C Barbearia — Footer Component =====
+// ===== Generic site footer =====
 import store from '../data/store.js';
 import { ICONS } from '../utils/helpers.js';
 
 export function renderFooter() {
   const config = store.getConfig();
-  const instaUrl = config.instagram || 'https://www.instagram.com/hcbarbeariaa';
 
   return `
     <footer class="footer" id="footer">
       <div class="container">
         <div class="footer-grid">
           <div class="footer-brand">
-            <img src="/images/logo.png" alt="${config.shopName}" />
-            <p>Mais do que um corte, uma experiência. Cuidado, precisão e personalidade em cada atendimento desde 2020.</p>
+            <h3>${config.shopName || 'Barbearia'}</h3>
+            <p>Estilo, cuidado e personalidade em cada atendimento.</p>
           </div>
           <div class="footer-col">
             <h4>Navegação</h4>
@@ -30,14 +29,13 @@ export function renderFooter() {
             <a href="#/agendar">Sobrancelha</a>
           </div>
           <div class="footer-col">
-            <h4>Contato</h4>
-            <a href="https://wa.me/${config.whatsapp}" target="_blank">💬 WhatsApp</a>
-            <a href="${instaUrl}" target="_blank">📸 Instagram</a>
-            <a href="#/contato">📍 Localização</a>
+            <h4>Redes e contato</h4>
+            <a href="${config.instagram || 'https://www.instagram.com/seu_perfil'}" target="_blank" rel="noopener noreferrer">Instagram</a>
+            <a href="https://wa.me/${String(config.whatsapp || '5511999999999').replace(/\D/g, '')}" target="_blank" rel="noopener noreferrer">WhatsApp</a>
           </div>
         </div>
         <div class="footer-bottom">
-          <p>© ${new Date().getFullYear()} ${config.shopName}. Todos os direitos reservados.</p>
+          <p>© ${new Date().getFullYear()} ${config.shopName || 'Barbearia'}. Todos os direitos reservados.</p>
         </div>
       </div>
     </footer>

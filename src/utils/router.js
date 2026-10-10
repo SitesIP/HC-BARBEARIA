@@ -1,4 +1,4 @@
-// ===== H&C Barbearia — SPA Router =====
+// ===== SPA router =====
 
 class Router {
   constructor() {
