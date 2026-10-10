@@ -1,39 +1,29 @@
-// ===== Application entry, BottomNav and SPA routing =====
+// ===== Application entry and routing =====
 import './styles/main.css';
 import router from './utils/router.js';
-import { renderBottomNav } from './components/BottomNav.js';
 
 // Pages
 import { renderHome, initHome } from './pages/Home.js';
 import { renderServices, initServicesPage } from './pages/Services.js';
 import { renderBarbers, initBarbersPage } from './pages/Barbers.js';
 import { renderContact, initContactPage } from './pages/Contact.js';
-import { renderBooking, initBooking, resetBooking, preselectService, preselectBarber } from './pages/Booking.js';
+import { renderBooking, initBooking, resetBooking } from './pages/Booking.js';
 
 const app = document.querySelector('#app');
 
-function renderPage(renderFn, initFn, routePath = '/') {
+function renderPage(renderFn, initFn) {
   if (!app) return;
-
   app.classList.remove('page-enter-active');
   app.classList.add('page-enter');
-
-  // Render Page Content + Mobile Bottom Navigation
-  const pageHtml = renderFn();
-  const bottomNavHtml = renderBottomNav(routePath);
-
-  app.innerHTML = `
-    <div class="app-layout" id="app-layout">
-      ${pageHtml}
-      ${bottomNavHtml}
-    </div>
-  `;
-
+  
+  app.innerHTML = renderFn();
+  
   // Trigger DOM reflow to enable animation
   void app.offsetWidth;
   app.classList.add('page-enter-active');
 
   if (typeof initFn === 'function') {
+    // Delay slightly to ensure DOM is ready
     requestAnimationFrame(() => {
       initFn();
     });
@@ -42,35 +32,22 @@ function renderPage(renderFn, initFn, routePath = '/') {
 
 // Router Configuration
 router
+  // Public Routes
   .on('/', () => {
-    renderPage(renderHome, initHome, '/');
+    renderPage(renderHome, initHome);
   })
   .on('/servicos', () => {
-    renderPage(renderServices, initServicesPage, '/servicos');
+    renderPage(renderServices, initServicesPage);
   })
   .on('/profissionais', () => {
-    renderPage(renderBarbers, initBarbersPage, '/profissionais');
+    renderPage(renderBarbers, initBarbersPage);
   })
   .on('/contato', () => {
-    renderPage(renderContact, initContactPage, '/contato');
+    renderPage(renderContact, initContactPage);
   })
-  .on('/agendar', (context) => {
+  .on('/agendar', () => {
     resetBooking();
-
-    // Check if query params were passed
-    if (context?.query) {
-      const svcParam = context.query.get('service');
-      const barberParam = context.query.get('barber');
-
-      if (svcParam) {
-        preselectService(parseInt(svcParam, 10));
-      }
-      if (barberParam) {
-        preselectBarber(parseInt(barberParam, 10));
-      }
-    }
-
-    renderPage(renderBooking, initBooking, '/agendar');
+    renderPage(renderBooking, initBooking);
   });
 
 // Start routing on load

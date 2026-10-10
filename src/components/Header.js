@@ -1,63 +1,44 @@
-// ===== H&C Barbearia Header Component =====
+// ===== Generic site header =====
 import store from '../data/store.js';
 
-export function renderHeader() {
+export function renderHeader(overlay = false) {
   const config = store.getConfig();
-  const hash = window.location.hash.slice(1) || '/';
-  const cleanPath = hash.split('?')[0] || '/';
-
-  const navLinks = [
-    { route: '/', label: 'Início' },
-    { route: '/servicos', label: 'Serviços' },
-    { route: '/profissionais', label: 'Profissionais' },
-    { route: '/contato', label: 'Contato & Horários' },
-  ];
-
-  // Determine current day status
-  const now = new Date();
-  const days = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab'];
-  const todayKey = days[now.getDay()];
-  const dayConfig = config.openingHours?.[todayKey];
-  const isOpenToday = dayConfig && dayConfig.active;
+  const navigation = overlay
+    ? [
+        { label: 'Início', section: 'hero' },
+        { label: 'Serviços', section: 'services-section' },
+        { label: 'Profissionais', section: 'barbers-section' },
+        { label: 'Contato', section: 'footer' },
+      ]
+    : [
+        { label: 'Início', route: '/' },
+        { label: 'Serviços', route: '/servicos' },
+        { label: 'Profissionais', route: '/profissionais' },
+        { label: 'Contato', route: '/contato' },
+      ];
 
   return `
-    <header class="header" id="header">
-      <div class="container header-container">
-        <a href="#/" class="header-brand" id="header-logo" aria-label="H&C Barbearia - Página Inicial">
-          <div class="brand-badge">H&C</div>
-          <div class="brand-text">
-            <span class="brand-title">${config.shopName || 'H&C Barbearia'}</span>
-            <span class="brand-tagline">
-              <span class="status-dot ${isOpenToday ? 'open' : 'closed'}"></span>
-              ${isOpenToday ? `Aberto hoje até ${dayConfig.close}` : 'Fechado hoje'}
-            </span>
-          </div>
+    <header class="header ${overlay ? 'header-overlay' : ''}" id="header">
+      <div class="container">
+        <a href="${overlay ? '#hero' : '#/'}" class="header-logo" id="header-logo" ${overlay ? 'data-section="hero"' : ''}>
+          <span>${config.shopName || 'Barbearia'}</span>
         </a>
 
-        <nav class="nav-menu" id="nav-menu" aria-label="Menu principal">
-          ${navLinks.map(item => `
-            <a href="#${item.route}"
-               class="nav-link ${cleanPath === item.route ? 'active' : ''}"
-               data-route="${item.route}">
-               ${item.label}
-            </a>
+        <nav class="nav-menu" id="nav-menu">
+          ${navigation.map(item => `
+            <a href="${overlay ? `#${item.section}` : `#${item.route}`}"
+               class="nav-link"
+               ${overlay ? `data-section="${item.section}"` : `data-route="${item.route}"`}
+               ${overlay ? 'aria-current="false"' : ''}>${item.label}</a>
           `).join('')}
-          <a href="#/agendar" class="btn btn-primary btn-sm header-cta" id="header-cta">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line></svg>
-            Agendar Horário
-          </a>
+          <a href="#/agendar" class="btn btn-primary btn-sm nav-cta" id="nav-cta">Agendar</a>
         </nav>
 
-        <div class="header-actions-mobile">
-          <a href="#/agendar" class="btn btn-primary btn-xs mobile-quick-book" aria-label="Agendar rápido">
-            Agendar
-          </a>
-          <button class="mobile-toggle" id="mobile-toggle" aria-label="Abrir menu de navegação" aria-expanded="false">
-            <span></span>
-            <span></span>
-            <span></span>
-          </button>
-        </div>
+        <button class="mobile-toggle" id="mobile-toggle" aria-label="Menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
       </div>
     </header>
   `;
@@ -70,33 +51,77 @@ export function initHeader() {
 
   if (toggle && menu) {
     toggle.addEventListener('click', () => {
-      const isOpen = menu.classList.toggle('open');
-      toggle.classList.toggle('active', isOpen);
-      toggle.setAttribute('aria-expanded', String(isOpen));
-      document.body.classList.toggle('menu-open', isOpen);
+      toggle.classList.toggle('active');
+      menu.classList.toggle('open');
     });
 
     // Close menu on link click
-    menu.querySelectorAll('.nav-link, .header-cta, .btn').forEach(link => {
+    menu.querySelectorAll('.nav-link, .nav-cta, .btn').forEach(link => {
       link.addEventListener('click', () => {
         toggle.classList.remove('active');
         menu.classList.remove('open');
-        toggle.setAttribute('aria-expanded', 'false');
-        document.body.classList.remove('menu-open');
       });
     });
   }
 
-  // Scroll glassmorphism effect
+  const sectionLinks = document.querySelectorAll('.nav-link[data-section], .header-logo[data-section]');
+  const sections = [...sectionLinks]
+    .map(link => document.getElementById(link.dataset.section))
+    .filter(Boolean);
+
+  if (sectionLinks.length && sections.length) {
+    const setActiveSection = (sectionId) => {
+      sectionLinks.forEach(link => {
+        const isActive = link.dataset.section === sectionId;
+        link.classList.toggle('active', isActive);
+        if (link.classList.contains('nav-link')) {
+          link.setAttribute('aria-current', isActive ? 'location' : 'false');
+        }
+      });
+    };
+
+    sectionLinks.forEach(link => {
+      link.addEventListener('click', event => {
+        const section = document.getElementById(link.dataset.section);
+        if (!section) return;
+        event.preventDefault();
+        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+
+    setActiveSection('hero');
+
+    const sectionObserver = new IntersectionObserver(entries => {
+      const visibleSections = entries
+        .filter(entry => entry.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+      if (visibleSections[0]) setActiveSection(visibleSections[0].target.id);
+    }, {
+      rootMargin: '-25% 0px -60% 0px',
+      threshold: [0, 0.25, 0.5, 0.75, 1],
+    });
+
+    sections.forEach(section => sectionObserver.observe(section));
+  }
+
+  // Scroll effect
   if (header) {
-    const handleScroll = () => {
-      if (window.scrollY > 20) {
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
         header.classList.add('scrolled');
       } else {
         header.classList.remove('scrolled');
       }
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
+    }, { passive: true });
   }
+
+  // Active nav link
+  const hash = window.location.hash.slice(1) || '/';
+  document.querySelectorAll('.nav-link').forEach(link => {
+    const route = link.getAttribute('data-route');
+    if (route === hash || (hash.startsWith(route) && route !== '/')) {
+      link.classList.add('active');
+    }
+  });
+
 }
