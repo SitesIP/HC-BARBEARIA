@@ -7,6 +7,25 @@ import {
   phoneMask, isValidPhone, showToast, MONTHS, WEEKDAYS
 } from '../utils/helpers.js';
 
+// SVG Icons for the booking flow (replaces emojis)
+const BOOKING_ICONS = {
+  user: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
+  phone: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>`,
+  scissors: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="8.5" y1="8.5" x2="20" y2="20"/><line x1="8.5" y1="15.5" x2="20" y2="4"/></svg>`,
+  barber: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
+  calendar: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`,
+  clock: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,
+  checkCircle: `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`,
+  emptyState: `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 15s1.5-2 4-2 4 2 4 2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>`,
+  chevronLeft: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>`,
+  chevronRight: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>`,
+  check: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`,
+  home: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`,
+  calendarAdd: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M12 14v4M10 16h4"/></svg>`,
+};
+
+const BARBER_ICON_SM = `<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="8.5" y1="8.5" x2="20" y2="20"/><line x1="8.5" y1="15.5" x2="20" y2="4"/></svg>`;
+
 let bookingState = {
   step: 1,
   selectedServices: [],
@@ -51,7 +70,7 @@ function renderProgress() {
     <div class="booking-progress" id="booking-progress">
       ${steps.map((s, i) => `
         <div class="booking-step-indicator">
-          <div class="step-circle ${bookingState.step === s.num ? 'active' : ''} ${bookingState.step > s.num ? 'completed' : ''}">${bookingState.step > s.num ? '✓' : s.num}</div>
+          <div class="step-circle ${bookingState.step === s.num ? 'active' : ''} ${bookingState.step > s.num ? 'completed' : ''}">${bookingState.step > s.num ? BOOKING_ICONS.check : s.num}</div>
           <span class="step-label ${bookingState.step === s.num ? 'active' : ''}">${s.label}</span>
         </div>
         ${i < steps.length - 1 ? `<div class="step-connector ${bookingState.step > s.num ? 'completed' : ''}"></div>` : ''}
@@ -124,15 +143,15 @@ function renderStepBarber() {
     <div class="barber-select-grid" id="barber-list">
       ${barbers.map(barber => `
         <div class="barber-select-item ${bookingState.selectedBarber === barber.id ? 'selected' : ''}" data-barber-id="${barber.id}" id="barber-${barber.id}">
-          <span class="barber-placeholder" aria-hidden="true">✂</span>
+          <span class="barber-placeholder" aria-hidden="true">${BARBER_ICON_SM}</span>
           <h4>${barber.name}</h4>
           <p>${barber.specialty}</p>
         </div>
       `).join('')}
     </div>
     <div class="booking-actions">
-      <button class="btn btn-secondary" id="btn-prev">← Voltar</button>
-      <button class="btn btn-primary" id="btn-next" ${!bookingState.selectedBarber ? 'disabled' : ''}>Próximo: Data →</button>
+      <button class="btn btn-secondary" id="btn-prev">${BOOKING_ICONS.chevronLeft} Voltar</button>
+      <button class="btn btn-primary" id="btn-next" ${!bookingState.selectedBarber ? 'disabled' : ''}>Próximo: Data ${BOOKING_ICONS.chevronRight}</button>
     </div>
   `;
 }
@@ -183,9 +202,9 @@ function renderStepDate() {
     </div>
     <div class="calendar-container">
       <div class="calendar-header">
-        <button class="calendar-nav" id="cal-prev" style="width: 36px; height: 36px; border-radius: 50%; background: var(--graphite-lighter); display: flex; align-items: center; justify-content: center;">◀</button>
+        <button class="calendar-nav" id="cal-prev" style="width: 36px; height: 36px; border-radius: 50%; background: var(--graphite-lighter); display: flex; align-items: center; justify-content: center;">${BOOKING_ICONS.chevronLeft}</button>
         <h3>${MONTHS[calendarMonth]} ${calendarYear}</h3>
-        <button class="calendar-nav" id="cal-next" style="width: 36px; height: 36px; border-radius: 50%; background: var(--graphite-lighter); display: flex; align-items: center; justify-content: center;">▶</button>
+        <button class="calendar-nav" id="cal-next" style="width: 36px; height: 36px; border-radius: 50%; background: var(--graphite-lighter); display: flex; align-items: center; justify-content: center;">${BOOKING_ICONS.chevronRight}</button>
       </div>
       <div class="calendar-weekdays">
         ${WEEKDAYS.map(d => `<span>${d}</span>`).join('')}
@@ -195,8 +214,8 @@ function renderStepDate() {
       </div>
     </div>
     <div class="booking-actions">
-      <button class="btn btn-secondary" id="btn-prev">← Voltar</button>
-      <button class="btn btn-primary" id="btn-next" ${!bookingState.selectedDate ? 'disabled' : ''}>Próximo: Horário →</button>
+      <button class="btn btn-secondary" id="btn-prev">${BOOKING_ICONS.chevronLeft} Voltar</button>
+      <button class="btn btn-primary" id="btn-next" ${!bookingState.selectedDate ? 'disabled' : ''}>Próximo: Horário ${BOOKING_ICONS.chevronRight}</button>
     </div>
   `;
 }
@@ -257,14 +276,14 @@ function renderStepTime() {
       </div>
     ` : `
       <div class="empty-state">
-        <div class="empty-state-icon">😔</div>
+        <div class="empty-state-icon">${BOOKING_ICONS.emptyState}</div>
         <h3>Nenhum horário disponível</h3>
         <p>Não há horários livres nesta data. Tente outra data.</p>
       </div>
     `}
     <div class="booking-actions">
-      <button class="btn btn-secondary" id="btn-prev">← Voltar</button>
-      <button class="btn btn-primary" id="btn-next" ${!bookingState.selectedTime ? 'disabled' : ''}>Próximo: Seus Dados →</button>
+      <button class="btn btn-secondary" id="btn-prev">${BOOKING_ICONS.chevronLeft} Voltar</button>
+      <button class="btn btn-primary" id="btn-next" ${!bookingState.selectedTime ? 'disabled' : ''}>Próximo: Seus Dados ${BOOKING_ICONS.chevronRight}</button>
     </div>
   `;
 }
@@ -289,8 +308,8 @@ function renderStepClient() {
       </div>
     </div>
     <div class="booking-actions">
-      <button class="btn btn-secondary" id="btn-prev">← Voltar</button>
-      <button class="btn btn-primary" id="btn-next">Próximo: Revisão →</button>
+      <button class="btn btn-secondary" id="btn-prev">${BOOKING_ICONS.chevronLeft} Voltar</button>
+      <button class="btn btn-primary" id="btn-next">Próximo: Revisão ${BOOKING_ICONS.chevronRight}</button>
     </div>
   `;
 }
@@ -310,27 +329,27 @@ function renderStepReview() {
     </div>
     <div class="review-card">
       <div class="review-item">
-        <span class="review-item-label">👤 Cliente</span>
+        <span class="review-item-label">${BOOKING_ICONS.user} Cliente</span>
         <span class="review-item-value">${bookingState.clientName}</span>
       </div>
       <div class="review-item">
-        <span class="review-item-label">📱 Telefone para contato</span>
+        <span class="review-item-label">${BOOKING_ICONS.phone} Telefone</span>
         <span class="review-item-value">${bookingState.clientPhone}</span>
       </div>
       <div class="review-item">
-        <span class="review-item-label">✂️ Serviço(s)</span>
+        <span class="review-item-label">${BOOKING_ICONS.scissors} Serviço(s)</span>
         <span class="review-item-value">${selectedSvcs.map(s => s.name).join(', ')}</span>
       </div>
       <div class="review-item">
-        <span class="review-item-label">💈 Barbeiro</span>
+        <span class="review-item-label">${BOOKING_ICONS.barber} Barbeiro</span>
         <span class="review-item-value">${barber?.name || 'Profissional 1'} (${barber?.sheetTab || 'Profissional 1'})</span>
       </div>
       <div class="review-item">
-        <span class="review-item-label">📅 Data</span>
+        <span class="review-item-label">${BOOKING_ICONS.calendar} Data</span>
         <span class="review-item-value">${formatDateDMY(bookingState.selectedDate)} (${getWeekdayName(bookingState.selectedDate)})</span>
       </div>
       <div class="review-item">
-        <span class="review-item-label">⏰ Horário</span>
+        <span class="review-item-label">${BOOKING_ICONS.clock} Horário</span>
         <span class="review-item-value">${bookingState.selectedTime}</span>
       </div>
       <div class="review-total">
@@ -339,8 +358,8 @@ function renderStepReview() {
       </div>
     </div>
     <div class="booking-actions">
-      <button class="btn btn-secondary" id="btn-prev">← Voltar</button>
-      <button class="btn btn-primary btn-lg" id="btn-confirm">✅ Confirmar e Gravar Reserva</button>
+      <button class="btn btn-secondary" id="btn-prev">${BOOKING_ICONS.chevronLeft} Voltar</button>
+      <button class="btn btn-primary btn-lg" id="btn-confirm">${BOOKING_ICONS.check} Confirmar e Gravar Reserva</button>
     </div>
   `;
 }
@@ -374,7 +393,7 @@ function renderStepConfirmation() {
 
   return `
     <div class="confirmation-card" style="margin: 0 auto; max-width: 520px;">
-      <div class="confirmation-icon">✅</div>
+      <div class="confirmation-icon">${BOOKING_ICONS.checkCircle}</div>
       <h2 style="font-size: 1.5rem; margin-bottom: var(--space-sm);">Agendamento Gravado com Sucesso!</h2>
       <p style="color: var(--gray-medium); margin-bottom: var(--space-lg); font-size: 0.95rem; line-height: 1.5;">
         Seus dados foram registrados. Envie os detalhes pelo WhatsApp para confirmar o agendamento.
@@ -382,23 +401,23 @@ function renderStepConfirmation() {
 
       <div class="review-card" style="text-align: left; margin-top: var(--space-md);">
         <div class="review-item">
-          <span class="review-item-label">👤 Cliente</span>
+          <span class="review-item-label">${BOOKING_ICONS.user} Cliente</span>
           <span class="review-item-value">${data.nome}</span>
         </div>
         <div class="review-item">
-          <span class="review-item-label">✂️ Serviço</span>
+          <span class="review-item-label">${BOOKING_ICONS.scissors} Serviço</span>
           <span class="review-item-value">${data.servico}</span>
         </div>
         <div class="review-item">
-          <span class="review-item-label">💈 Barbeiro</span>
+          <span class="review-item-label">${BOOKING_ICONS.barber} Barbeiro</span>
           <span class="review-item-value">${data.barbeiro}</span>
         </div>
         <div class="review-item">
-          <span class="review-item-label">📅 Data</span>
+          <span class="review-item-label">${BOOKING_ICONS.calendar} Data</span>
           <span class="review-item-value">${data.dataFormatted} (${data.diaSemana})</span>
         </div>
         <div class="review-item">
-          <span class="review-item-label">⏰ Horário</span>
+          <span class="review-item-label">${BOOKING_ICONS.clock} Horário</span>
           <span class="review-item-value">${data.horario}</span>
         </div>
       </div>
@@ -408,10 +427,10 @@ function renderStepConfirmation() {
           Confirmar pelo WhatsApp
         </a>
         <a href="${calendarUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-block" style="text-align: center; font-size: 0.9rem; padding: 14px 18px;">
-          📅 Adicionar ao Google Agenda
+          ${BOOKING_ICONS.calendarAdd} Adicionar ao Google Agenda
         </a>
         <a href="#/" class="btn btn-secondary btn-block" style="text-align: center; font-size: 0.9rem; padding: 14px 18px;">
-          🏠 Voltar à Página Inicial
+          ${BOOKING_ICONS.home} Voltar à Página Inicial
         </a>
       </div>
     </div>
@@ -689,7 +708,7 @@ function bindReviewEvents() {
       console.error('Erro ao confirmar:', err);
       showToast('Erro ao gravar agendamento. Tente novamente.', 'error');
       btn.disabled = false;
-      btn.innerHTML = '✅ Confirmar e Gravar Reserva';
+      btn.innerHTML = `${BOOKING_ICONS.check} Confirmar e Gravar Reserva`;
     }
   });
 }

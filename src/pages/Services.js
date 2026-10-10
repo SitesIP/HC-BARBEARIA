@@ -24,11 +24,11 @@ export function renderServices() {
   return `
     ${renderHeader()}
 
-    <section class="section" style="padding-top: calc(var(--header-height) + var(--space-xl)); padding-bottom: var(--space-xl);">
+    <section class="section services-page-section">
       <div class="container">
-        <div class="section-header">
+        <div class="section-header section-header-compact">
           <h2>Nossos Serviços</h2>
-          <p>Conheça nossa lista completa de serviços e cuidados masculinos.</p>
+          <p>Escolha um serviço para agendar seu horário.</p>
         </div>
 
         <!-- Category Tabs Filter (Pills) -->
@@ -41,13 +41,13 @@ export function renderServices() {
           `).join('')}
         </div>
 
-        <!-- Compact Services List -->
-        <div class="services-grid services-compact-grid" id="services-list-container">
+        <!-- High-density single-line Services List -->
+        <div class="services-compact-list" id="services-list-container">
           ${renderServicesList(filtered)}
         </div>
 
-        <div style="text-align: center; margin-top: var(--space-xl);">
-          <a href="#/agendar" class="btn btn-primary btn-lg">Agendar Horário Online</a>
+        <div class="services-page-cta">
+          <a href="#/agendar" class="btn btn-primary btn-md">Agendar Horário Online</a>
         </div>
       </div>
     </section>
@@ -62,17 +62,19 @@ function renderServicesList(servicesList) {
   }
 
   return servicesList.map((svc, i) => `
-    <div class="service-card service-card-compact" style="transition-delay: ${i * 0.05}s">
-      <div class="service-icon">${getServiceSvg(svc.name, svc.icon)}</div>
-      <div class="service-info">
-        <h4>${svc.name}</h4>
-        <p>${svc.description}</p>
-        <div class="service-meta">
-          <span class="service-price">${formatCurrency(svc.price)}</span>
-        </div>
+    <div class="service-row-card" style="transition-delay: ${i * 0.03}s">
+      <div class="service-row-icon">
+        ${getServiceSvg(svc.name, svc.icon)}
       </div>
-      <div class="service-action-compact">
-        <a href="#/agendar" class="btn btn-secondary btn-xs">Agendar</a>
+      <div class="service-row-info">
+        <h4 class="service-row-title">${svc.name}</h4>
+        <p class="service-row-desc">${svc.description}</p>
+      </div>
+      <div class="service-row-price">
+        <span>${formatCurrency(svc.price)}</span>
+      </div>
+      <div class="service-row-action">
+        <a href="#/agendar" class="btn btn-primary btn-xs btn-service-select">Selecionar</a>
       </div>
     </div>
   `).join('');

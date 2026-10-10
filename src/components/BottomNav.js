@@ -41,6 +41,7 @@ export function renderBottomNav(currentPath = '/') {
           if (item.isPrimary) {
             return `
               <a href="#${item.route}" class="tab-item tab-primary ${isActive ? 'active' : ''}" id="tab-bnav-agendar">
+                <span class="tab-indicator" aria-hidden="true"></span>
                 <div class="tab-primary-btn">
                   ${item.icon}
                 </div>
@@ -50,6 +51,7 @@ export function renderBottomNav(currentPath = '/') {
           }
           return `
             <a href="#${item.route}" class="tab-item ${isActive ? 'active' : ''}" id="tab-bnav-${item.route.replace('/', '') || 'home'}">
+              <span class="tab-indicator" aria-hidden="true"></span>
               <span class="tab-icon">${item.icon}</span>
               <span class="tab-label">${item.label}</span>
             </a>
