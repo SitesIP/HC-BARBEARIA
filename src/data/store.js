@@ -10,22 +10,22 @@ const STORAGE_KEYS = {
   TEMPLATE_VERSION: 'hc_template_version',
 };
 
-const TEMPLATE_VERSION = '2';
+const TEMPLATE_VERSION = '4_base_generic';
 
-// Default Data
+// Default Data (Preços em 0 para exibição com 'R$ --')
 const DEFAULT_SERVICES = [
-  { id: 1, name: 'Navalhado', description: 'Corte na navalha com acabamento impecável.', price: 30, duration: 40, icon: '', active: true },
-  { id: 2, name: 'Na Zero', description: 'Corte na máquina zero com degradê perfeito.', price: 28, duration: 40, icon: '', active: true },
-  { id: 3, name: 'Social', description: 'Corte social clássico e elegante.', price: 25, duration: 30, icon: '', active: true },
-  { id: 4, name: 'Barba', description: 'Modelagem tradicional de barba.', price: 23, duration: 20, icon: '', active: true },
-  { id: 5, name: 'Barba Italiana', description: 'Design sofisticado no estilo italiano.', price: 25, duration: 30, icon: '', active: true },
-  { id: 6, name: 'Sobrancelha', description: 'Design e limpeza de sobrancelha.', price: 12, duration: 15, icon: '', active: true },
-  { id: 7, name: 'Tesoura', description: 'Corte exclusivamente na tesoura.', price: 38, duration: 45, icon: '', active: true },
-  { id: 8, name: 'Pigmentação Cabelo', description: 'Disfarce e realce no corte de cabelo.', price: 20, duration: 20, icon: '', active: true },
-  { id: 9, name: 'Pigmentação Barba', description: 'Preenchimento de falhas e contorno na barba.', price: 15, duration: 15, icon: '', active: true },
-  { id: 10, name: 'Combo: Navalhado + Barba + Sobrancelha', description: 'Corte navalhado, barba completa e sobrancelha.', price: 65, duration: 60, icon: '', active: true },
-  { id: 11, name: 'Combo: Zero + Barba + Sobrancelha', description: 'Corte na zero, barba completa e sobrancelha.', price: 59, duration: 60, icon: '', active: true },
-  { id: 12, name: 'Combo: Social + Barba + Sobrancelha', description: 'Corte social, barba completa e sobrancelha.', price: 57, duration: 55, icon: '', active: true },
+  { id: 1, name: 'Navalhado', category: 'cabelo', description: 'Corte na navalha com acabamento impecável.', price: 0, duration: 40, icon: '', active: true },
+  { id: 2, name: 'Na Zero', category: 'cabelo', description: 'Corte na máquina zero com degradê perfeito.', price: 0, duration: 40, icon: '', active: true },
+  { id: 3, name: 'Social', category: 'cabelo', description: 'Corte social clássico e elegante.', price: 0, duration: 30, icon: '', active: true },
+  { id: 4, name: 'Barba', category: 'barba', description: 'Modelagem tradicional de barba.', price: 0, duration: 20, icon: '', active: true },
+  { id: 5, name: 'Barba Italiana', category: 'barba', description: 'Design sofisticado no estilo italiano.', price: 0, duration: 30, icon: '', active: true },
+  { id: 6, name: 'Sobrancelha', category: 'outros', description: 'Design e limpeza de sobrancelha.', price: 0, duration: 15, icon: '', active: true },
+  { id: 7, name: 'Tesoura', category: 'cabelo', description: 'Corte exclusivamente na tesoura.', price: 0, duration: 45, icon: '', active: true },
+  { id: 8, name: 'Pigmentação Cabelo', category: 'cabelo', description: 'Disfarce e realce no corte de cabelo.', price: 0, duration: 20, icon: '', active: true },
+  { id: 9, name: 'Pigmentação Barba', category: 'barba', description: 'Preenchimento de falhas e contorno na barba.', price: 0, duration: 15, icon: '', active: true },
+  { id: 10, name: 'Combo: Navalhado + Barba + Sobrancelha', category: 'combos', description: 'Corte navalhado, barba completa e sobrancelha.', price: 0, duration: 60, icon: '', active: true },
+  { id: 11, name: 'Combo: Zero + Barba + Sobrancelha', category: 'combos', description: 'Corte na zero, barba completa e sobrancelha.', price: 0, duration: 60, icon: '', active: true },
+  { id: 12, name: 'Combo: Social + Barba + Sobrancelha', category: 'combos', description: 'Corte social, barba completa e sobrancelha.', price: 0, duration: 55, icon: '', active: true },
 ];
 
 const DEFAULT_BARBERS = [
@@ -35,9 +35,9 @@ const DEFAULT_BARBERS = [
 
 const DEFAULT_CONFIG = {
   shopName: 'Barbearia',
-  address: '',
-  instagram: 'https://www.instagram.com/seu_perfil', // Edite para o perfil da barbearia.
-  whatsapp: '5511999999999', // Edite com DDI e DDD, somente números.
+  address: 'Rua Principal, 123 - Centro',
+  instagram: 'https://www.instagram.com',
+  whatsapp: '5511999999999',
   openingHours: {
     seg: { open: '13:30', close: '17:30', active: true },
     ter: { open: '09:00', close: '18:00', active: true },

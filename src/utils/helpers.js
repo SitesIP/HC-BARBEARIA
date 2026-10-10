@@ -1,7 +1,10 @@
 // ===== Application utilities =====
 
-// Format currency BRL
+// Format currency BRL (returns R$ -- when price is 0 or empty)
 export function formatCurrency(value) {
+  if (value === null || value === undefined || value === 0 || value === '' || value === '--' || isNaN(value)) {
+    return 'R$ --';
+  }
   return new Intl.NumberFormat('pt-BR', {
     style: 'currency',
     currency: 'BRL'

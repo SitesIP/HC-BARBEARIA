@@ -1,6 +1,7 @@
 // ===== Application entry and routing =====
 import './styles/main.css';
 import router from './utils/router.js';
+import { renderBottomNav } from './components/BottomNav.js';
 
 // Pages
 import { renderHome, initHome } from './pages/Home.js';
@@ -11,19 +12,26 @@ import { renderBooking, initBooking, resetBooking } from './pages/Booking.js';
 
 const app = document.querySelector('#app');
 
-function renderPage(renderFn, initFn) {
+function renderPage(renderFn, initFn, routePath = '/') {
   if (!app) return;
   app.classList.remove('page-enter-active');
   app.classList.add('page-enter');
   
-  app.innerHTML = renderFn();
+  const contentHtml = renderFn();
+  const bottomNavHtml = renderBottomNav(routePath);
+
+  app.innerHTML = `
+    <div class="app-layout">
+      ${contentHtml}
+      ${bottomNavHtml}
+    </div>
+  `;
   
   // Trigger DOM reflow to enable animation
   void app.offsetWidth;
   app.classList.add('page-enter-active');
 
   if (typeof initFn === 'function') {
-    // Delay slightly to ensure DOM is ready
     requestAnimationFrame(() => {
       initFn();
     });
@@ -32,22 +40,22 @@ function renderPage(renderFn, initFn) {
 
 // Router Configuration
 router
-  // Public Routes
+  // Public Routes (Abas distintas)
   .on('/', () => {
-    renderPage(renderHome, initHome);
+    renderPage(renderHome, initHome, '/');
   })
   .on('/servicos', () => {
-    renderPage(renderServices, initServicesPage);
+    renderPage(renderServices, initServicesPage, '/servicos');
   })
   .on('/profissionais', () => {
-    renderPage(renderBarbers, initBarbersPage);
+    renderPage(renderBarbers, initBarbersPage, '/profissionais');
   })
   .on('/contato', () => {
-    renderPage(renderContact, initContactPage);
+    renderPage(renderContact, initContactPage, '/contato');
   })
   .on('/agendar', () => {
     resetBooking();
-    renderPage(renderBooking, initBooking);
+    renderPage(renderBooking, initBooking, '/agendar');
   });
 
 // Start routing on load

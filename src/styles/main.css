@@ -58,7 +58,7 @@
   --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.5);
   --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.6);
   --shadow-lg: 0 8px 28px rgba(0, 0, 0, 0.75);
-  --shadow-gold: 0 4px 20px rgba(217, 130, 43, 0.3);
+  --shadow-gold: 0 4px 16px rgba(160, 170, 178, 0.15);
   --shadow-steel: 0 4px 16px rgba(160, 170, 178, 0.15);
 
   /* Transitions */
@@ -264,16 +264,16 @@ h4 {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--copper), var(--copper-dark));
+  background: linear-gradient(135deg, var(--steel-dark), var(--graphite-lighter));
   color: #FFFFFF;
-  box-shadow: var(--shadow-gold);
-  border: 1px solid rgba(217, 130, 43, 0.3);
+  box-shadow: var(--shadow-steel);
+  border: 1px solid rgba(160, 170, 178, 0.3);
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 24px rgba(217, 130, 43, 0.45);
-  background: linear-gradient(135deg, var(--copper-light), var(--copper));
+  box-shadow: 0 6px 20px rgba(160, 170, 178, 0.25);
+  background: linear-gradient(135deg, var(--steel), var(--steel-dark));
 }
 
 .btn-primary:active {
@@ -288,9 +288,9 @@ h4 {
 }
 
 .btn-secondary:hover {
-  background: rgba(217, 130, 43, 0.1);
-  border-color: var(--copper);
-  color: var(--copper-light);
+  background: rgba(160, 170, 178, 0.12);
+  border-color: var(--steel-light);
+  color: #FFFFFF;
   transform: translateY(-2px);
 }
 
@@ -542,7 +542,7 @@ h4 {
   right: 15%;
   width: 700px;
   height: 500px;
-  background: radial-gradient(circle, rgba(217, 130, 43, 0.12) 0%, rgba(160, 170, 178, 0.04) 40%, transparent 70%);
+  background: radial-gradient(circle, rgba(160, 170, 178, 0.1) 0%, rgba(160, 170, 178, 0.03) 40%, transparent 70%);
   filter: blur(50px);
 }
 
@@ -672,10 +672,10 @@ h4 {
 }
 
 .badge-highlight {
-  background: rgba(217, 130, 43, 0.16);
-  color: var(--copper-light);
-  border: 1px solid rgba(217, 130, 43, 0.45);
-  box-shadow: 0 0 12px rgba(217, 130, 43, 0.18);
+  background: rgba(160, 170, 178, 0.12);
+  color: var(--steel-light);
+  border: 1px solid rgba(160, 170, 178, 0.35);
+  box-shadow: 0 0 12px rgba(160, 170, 178, 0.15);
 }
 
 .badge-closed {
@@ -700,14 +700,14 @@ h4 {
   overflow: hidden;
   border: 1.5px solid rgba(160, 170, 178, 0.25);
   background: var(--graphite);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), 0 0 40px rgba(217, 130, 43, 0.15);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), 0 0 30px rgba(160, 170, 178, 0.1);
   transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
 }
 
 .hero-emblem-card:hover {
   transform: translateY(-6px);
-  border-color: rgba(217, 130, 43, 0.45);
-  box-shadow: 0 28px 65px rgba(0, 0, 0, 0.95), 0 0 55px rgba(217, 130, 43, 0.3);
+  border-color: rgba(160, 170, 178, 0.45);
+  box-shadow: 0 28px 65px rgba(0, 0, 0, 0.95), 0 0 40px rgba(160, 170, 178, 0.2);
 }
 
 .hero-emblem-img {
@@ -828,7 +828,7 @@ h4 {
 }
 
 .service-card:hover {
-  border-color: rgba(217, 130, 43, 0.35);
+  border-color: rgba(160, 170, 178, 0.35);
   transform: translateY(-4px);
   box-shadow: var(--shadow-lg);
   background: var(--graphite-light);
@@ -842,13 +842,13 @@ h4 {
   width: 52px;
   height: 52px;
   min-width: 52px;
-  background: linear-gradient(135deg, rgba(160, 170, 178, 0.1), rgba(217, 130, 43, 0.08));
-  border: 1px solid rgba(160, 170, 178, 0.18);
+  background: rgba(160, 170, 178, 0.08);
+  border: 1px solid rgba(160, 170, 178, 0.22);
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--copper-light);
+  color: var(--steel-light);
   transition: all var(--transition-base);
   user-select: none;
   -webkit-user-select: none;
@@ -861,8 +861,8 @@ h4 {
 }
 
 .service-card:hover .service-icon {
-  background: linear-gradient(135deg, rgba(217, 130, 43, 0.2), rgba(160, 170, 178, 0.15));
-  border-color: rgba(217, 130, 43, 0.45);
+  background: rgba(160, 170, 178, 0.18);
+  border-color: rgba(197, 208, 216, 0.45);
   color: #FFFFFF;
   transform: scale(1.05);
 }
@@ -2269,8 +2269,8 @@ h4 {
 }
 
 .hours-row-highlight {
-  background: rgba(217, 130, 43, 0.05);
-  border-color: rgba(217, 130, 43, 0.2);
+  background: rgba(160, 170, 178, 0.08);
+  border-color: rgba(160, 170, 178, 0.25);
 }
 
 .hours-row-main {
@@ -2615,22 +2615,47 @@ h4 {
   }
 
   .service-card {
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    padding: var(--space-lg);
-    text-align: center;
+    padding: 12px 14px;
+    text-align: left;
+    gap: 12px;
   }
 
   .service-info {
-    width: 100%;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .service-info h4 {
+    font-size: 0.98rem;
+    margin-bottom: 2px;
+  }
+
+  .service-info p {
+    font-size: 0.78rem;
+    margin-bottom: 2px;
+    line-height: 1.35;
   }
 
   .service-icon {
-    margin: 0 auto;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    margin: 0;
+  }
+
+  .service-icon svg {
+    width: 22px;
+    height: 22px;
   }
 
   .service-meta {
-    justify-content: center;
+    justify-content: flex-start;
+  }
+
+  .service-action-compact {
+    flex-shrink: 0;
   }
 
   .barber-select-grid {
@@ -2924,4 +2949,307 @@ h4 {
   .hero-cinematic h1 {
     font-size: clamp(2.35rem, 10vw, 3.4rem);
   }
+}
+
+/* ==========================================
+   MOBILE-FIRST ENHANCEMENTS (TABS, SLIDER, HUB)
+   ========================================== */
+
+/* Layout wrapper with space for bottom navigation on mobile */
+@media (max-width: 768px) {
+  .app-layout {
+    padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* Bottom Navigation Tabs */
+.mobile-bottom-tabs {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: rgba(14, 16, 18, 0.96);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(160, 170, 178, 0.15);
+  padding: 6px 8px calc(6px + env(safe-area-inset-bottom, 0px));
+}
+
+@media (min-width: 769px) {
+  .mobile-bottom-tabs {
+    display: none;
+  }
+}
+
+.mobile-tabs-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.tab-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  color: var(--gray-medium);
+  padding: 4px 6px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  min-width: 52px;
+}
+
+.tab-item.active {
+  color: #FFFFFF;
+}
+
+.tab-item.active .tab-icon {
+  color: var(--steel-light);
+  transform: translateY(-1px);
+}
+
+.tab-primary .tab-primary-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--steel-dark), var(--graphite-light));
+  border: 1px solid rgba(160, 170, 178, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  margin-top: -12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+
+.tab-primary.active .tab-primary-btn {
+  background: linear-gradient(135deg, var(--steel), var(--steel-dark));
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Quick Hub Grid */
+.section-hub {
+  padding: 0 0 var(--space-xl);
+}
+
+.hub-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+@media (min-width: 769px) {
+  .hub-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+}
+
+.hub-tile {
+  background: var(--graphite);
+  border: 1px solid var(--graphite-border);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.2s ease;
+}
+
+.hub-tile:hover {
+  background: var(--graphite-light);
+  border-color: rgba(160, 170, 178, 0.35);
+  transform: translateY(-2px);
+}
+
+.hub-tile.highlight {
+  border-color: rgba(160, 170, 178, 0.3);
+  background: linear-gradient(135deg, rgba(160, 170, 178, 0.08), var(--graphite));
+}
+
+.hub-icon {
+  font-size: 1.35rem;
+}
+
+.hub-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.hub-info strong {
+  display: block;
+  font-size: 0.88rem;
+  color: var(--off-white);
+  line-height: 1.2;
+}
+
+.hub-info span {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--gray-medium);
+}
+
+.hub-arrow {
+  color: var(--steel-light);
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+/* Category Filter Pills on Services page */
+.services-filter-pills {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 12px;
+  margin-bottom: 18px;
+}
+
+.services-filter-pills::-webkit-scrollbar {
+  display: none;
+}
+
+.filter-pill {
+  padding: 8px 18px;
+  border-radius: var(--radius-full);
+  background: var(--graphite);
+  border: 1px solid rgba(160, 170, 178, 0.2);
+  color: var(--gray-medium);
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.filter-pill:hover,
+.filter-pill.active {
+  background: var(--graphite-lighter);
+  border-color: rgba(160, 170, 178, 0.45);
+  color: #FFFFFF;
+}
+
+/* Compact Service Cards */
+.service-card-compact {
+  padding: 14px 18px;
+}
+
+.service-card-compact .service-info h4 {
+  font-size: 1.05rem;
+  margin-bottom: 2px;
+}
+
+.service-card-compact .service-info p {
+  font-size: 0.82rem;
+  margin-bottom: 4px;
+}
+
+.service-action-compact {
+  align-self: center;
+}
+
+/* Horizontal Barbers Slider on Mobile */
+@media (max-width: 768px) {
+  .barbers-grid {
+    display: flex !important;
+    overflow-x: auto !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    gap: 16px !important;
+    padding-bottom: 14px !important;
+    scrollbar-width: none !important;
+  }
+
+  .barbers-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .barbers-grid .barber-card {
+    flex: 0 0 85% !important;
+    max-width: 320px !important;
+    scroll-snap-align: center !important;
+    margin: 0 !important;
+  }
+
+  .barbers-scroll-hint {
+    display: block;
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--steel-light);
+    margin-bottom: 12px;
+  }
+}
+
+@media (min-width: 769px) {
+  .barbers-scroll-hint {
+    display: none;
+  }
+
+  .barbers-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+}
+
+/* Contact Page Enhancements */
+.contact-cards-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+@media (min-width: 600px) {
+  .contact-cards-row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.contact-info-card {
+  background: var(--graphite);
+  border: 1px solid var(--graphite-border);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  text-align: center;
+}
+
+.contact-icon {
+  font-size: 1.6rem;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.contact-info-card h4 {
+  font-size: 1.05rem;
+  color: var(--off-white);
+  margin-bottom: 4px;
+}
+
+.contact-info-card p {
+  font-size: 0.85rem;
+  color: var(--gray-medium);
+}
+
+.today-tag {
+  font-size: 0.65rem;
+  background: var(--steel-dark);
+  color: #FFFFFF;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: 6px;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.arrival-tag {
+  font-size: 0.65rem;
+  background: rgba(160, 170, 178, 0.12);
+  color: var(--steel-light);
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: 6px;
 }
